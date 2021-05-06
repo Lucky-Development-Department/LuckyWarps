@@ -77,6 +77,7 @@ public class WarpManager {
         FileConfiguration config = plugin.getConfig();
         if(!config.isConfigurationSection("warps")) return;
 
+        System.out.println("[LuckyWarps] Loading all saved warps...");
         for(String warpName : config.getConfigurationSection("warps").getKeys(false)){
 
             World world = Bukkit.getWorld(config.getString("warps." + warpName + ".world"));
@@ -91,8 +92,11 @@ public class WarpManager {
             String permission = "luckywarps.access." + warpName;
 
             this.warps.put(warpName, new Warp(warpName, location, permission));
+            System.out.println("[LuckyWarps] Loaded Warp: " + warpName);
 
         }
+
+        System.out.println("[LuckyWarps] Successfully loaded all saved warps!");
 
     }
 
