@@ -20,9 +20,6 @@ public class WarpManager {
     private final LuckyWarps plugin;
     public WarpManager(LuckyWarps plugin){
         this.plugin = plugin;
-
-        Location location = new Location(Bukkit.getWorlds().get(0), 100, 100, 100);
-        this.warps.put("test", new Warp("test", location, "permission.here"));
     }
 
     @Nullable
@@ -32,6 +29,18 @@ public class WarpManager {
 
     public List<String> getWarpListByName() {
         return new ArrayList<>(this.warps.keySet());
+    }
+
+    public void createWarp(String warpName, Location location){
+        this.warps.put(warpName, new Warp(warpName, location, "luckywarps.access." + warpName));
+    }
+
+    public void deleteWarpByName(String warpName){
+        this.warps.remove(warpName);
+    }
+
+    public void clearWarp(){
+        this.warps.clear();
     }
 
     public void serializeLocation(Warp warp){

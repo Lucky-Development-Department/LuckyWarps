@@ -8,3 +8,5 @@ softdepend: [Multiverse-Core]
 commands:
   warp:
     aliases: [warps]
+  setwarp:
+  delwarp:

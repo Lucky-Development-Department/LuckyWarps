@@ -30,11 +30,13 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
         WarpManager warpManager = plugin.getWarpManager();
         WarmupManager warmupManager = plugin.getWarmupManager();
 
-        if(sender instanceof Player){
-            if(args.length < 1){
-                sender.sendMessage(this.color("&cUsage: /warp <warpName>"));
-                return true;
-            }
+        if(args.length == 0){
+            sender.sendMessage(this.color("&cUsage: /warp <warpName> [<player>]"));
+            return true;
+        }
+
+        if(args.length == 1){
+            if(!(sender instanceof Player)) return true;
 
             String warpName = args[0];
 
@@ -51,9 +53,6 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            String title = "&e&lTeleporting...";
-            String subTitle = "&7&oYou will be teleported in &f&o&n ";
-
             warmupManager.addPlayerToWarmup(player.getUniqueId());
 
             new BukkitRunnable(){
@@ -62,15 +61,22 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 public void run(){
 
                     if(!warmupManager.isPlayerOnWarmup(player.getUniqueId())){
-                        player.sendMessage(color("&cDon't move! Your teleportation has been cancelled!"));
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            player.sendMessage(color("&cDon't move! Your teleportation has been cancelled!"));
+                            player.sendTitle("", "", 0, 20, 0);
+                            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+                        });
                         this.cancel();
                         return;
                     }
 
                     if(counter == 1){
                         player.teleport(warp.getLocation());
-                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                                player.playSound(warp.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1));
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            player.playSound(warp.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                            warmupManager.removePlayerFromWarmup(player.getUniqueId());
+                            player.sendTitle("", "", 0, 20, 0);
+                        });
                         this.cancel();
                         return;
                     }
@@ -85,6 +91,31 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                 }
 
             }.runTaskTimer(plugin, 0L, 20L);
+            return true;
+        }
+
+        if(args.length == 2){
+            if(!(sender.hasPermission("luckywarps.admin"))){
+                sender.sendMessage(this.color("&cYou don't have enough permission!"));
+                return true;
+            }
+
+            String warpName = args[0];
+
+            Warp warp = warpManager.getWarpByName(warpName);
+            if(warp == null){
+                sender.sendMessage(this.color("&cThere is no warp with that name!"));
+                return true;
+            }
+
+            Player player = Bukkit.getPlayer(args[1]);
+            if(player == null){
+                sender.sendMessage(this.color("&cThere is no players online with that name!"));
+                return true;
+            }
+
+            player.teleport(warp.getLocation());
+            return true;
 
         }
 
