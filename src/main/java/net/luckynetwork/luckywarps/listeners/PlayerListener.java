@@ -27,7 +27,7 @@ public class PlayerListener implements Listener {
         Location to = event.getTo();
         Location from = event.getFrom();
 
-        if(to.getX() != from.getX() || to.getZ() != from.getZ()){
+        if(to.getBlockX() != from.getBlockX() || to.getBlockZ() != from.getBlockZ()){
             warmupManager.removePlayerFromWarmup(player.getUniqueId());
         }
 
