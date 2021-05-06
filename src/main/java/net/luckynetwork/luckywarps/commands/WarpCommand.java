@@ -4,8 +4,7 @@ import net.luckynetwork.luckywarps.LuckyWarps;
 import net.luckynetwork.luckywarps.managers.WarmupManager;
 import net.luckynetwork.luckywarps.managers.WarpManager;
 import net.luckynetwork.luckywarps.objects.Warp;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,8 +54,10 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
             String title = "&e&lTeleporting...";
             String subTitle = "&7&oYou will be teleported in &f&o&n ";
 
+            warmupManager.addPlayerToWarmup(player.getUniqueId());
+
             new BukkitRunnable(){
-                int counter = 1;
+                int counter = 6;
                 @Override
                 public void run(){
 
@@ -66,15 +67,20 @@ public class WarpCommand implements CommandExecutor, TabCompleter {
                         return;
                     }
 
-                    if(counter == 5){
+                    if(counter == 1){
                         player.teleport(warp.getLocation());
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                                player.playSound(warp.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1));
                         this.cancel();
                         return;
                     }
 
-                    counter++;
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                            player.sendTitle(color(title), color(subTitle + counter), 0, 30, 0));
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        player.sendTitle(color("&e&lTeleporting..."), color("&7You will be teleported in &f&n" + counter), 0, 30, 0);
+                    });
+
+                    counter--;
 
                 }
 
