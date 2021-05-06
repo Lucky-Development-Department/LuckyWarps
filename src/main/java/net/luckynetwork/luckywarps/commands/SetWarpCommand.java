@@ -45,7 +45,7 @@ public class SetWarpCommand implements CommandExecutor, TabCompleter {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-           player.sendTitle(this.color("&a&lWarps Created!"), this.color("&7You have created warp with name &f&n" + warpName), 15, 20, 15);
+           player.sendTitle(this.color("&a&lWarps Created!"), this.color("&7You have created warp with name &f&n" + warpName), 15, 50, 15);
         });
 
         return false;
