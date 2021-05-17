@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class WarpManager {
 
@@ -62,14 +63,14 @@ public class WarpManager {
         config.set("warps." + warp.getName() + ".yaw", yaw);
         config.set("warps." + warp.getName() + ".pitch", pitch);
 
+        plugin.saveConfig();
+
     }
 
     public void saveWarps(){
         for(String warpName : this.warps.keySet()){
             this.serializeLocation(this.warps.get(warpName));
         }
-
-        plugin.saveConfig();
     }
 
     public void loadWarps(){
@@ -95,6 +96,9 @@ public class WarpManager {
             System.out.println("[LuckyWarps] Loaded Warp: " + warpName);
 
         }
+
+        config.set("warps", null);
+        plugin.saveConfig();
 
         System.out.println("[LuckyWarps] Successfully loaded all saved warps!");
 

@@ -21,14 +21,13 @@ public class LuckyWarps extends JavaPlugin {
         this.getConfig().options().copyDefaults(true);
 
         registerCommandsAndListener();
-        warpManager.loadWarps();
+        Bukkit.getScheduler().runTaskLater(this, warpManager::loadWarps, 100L);
 
     }
 
     @Override
     public void onDisable(){
         warpManager.saveWarps();
-        warpManager.clearWarp();
     }
 
     private void registerCommandsAndListener(){
