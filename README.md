@@ -1,4 +1,4 @@
-# LuckyWarps (WIP)
+# LuckyWarps (Completed)
 Warp plugin like essentials.
 
 Preview:<br>
